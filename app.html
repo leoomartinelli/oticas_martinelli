@@ -465,12 +465,22 @@
                     </form>
                 </div>
                 <div class="modal-footer bg-light">
-                    <button type="button" id="btnExcluirReceita" class="btn btn-outline-danger me-auto"><i
-                            class="bi bi-trash"></i> Excluir</button>
+                    <button type="button" class="btn btn-secondary me-auto" onclick="imprimirReceita()">
+                        <i class="bi bi-printer-fill"></i> Imprimir
+                    </button>
+
+                    <button type="button" id="btnExcluirReceita" class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i> Excluir
+                    </button>
+
                     <button type="button" id="btnEditarReceita" class="btn btn-warning text-dark"
-                        onclick="habilitarEdicao()"><i class="bi bi-pencil"></i> Editar</button>
-                    <button type="button" id="btnSalvarEdicao" class="btn btn-success d-none"
-                        onclick="salvarEdicao()"><i class="bi bi-check-lg"></i> Salvar Alterações</button>
+                        onclick="habilitarEdicao()">
+                        <i class="bi bi-pencil"></i> Editar
+                    </button>
+
+                    <button type="button" id="btnSalvarEdicao" class="btn btn-success d-none" onclick="salvarEdicao()">
+                        <i class="bi bi-check-lg"></i> Salvar Alterações
+                    </button>
                 </div>
             </div>
         </div>
@@ -707,6 +717,165 @@
         });
 
         mostrarLista();
+
+
+        function imprimirReceita() {
+            // 1. Coleta os dados do Cliente (da tela de fundo)
+            const nome = document.getElementById('infoNome').innerText;
+            const cpf = document.getElementById('infoCpf').innerText;
+            const tel = document.getElementById('infoTelefone').innerText;
+            const endereco = document.getElementById('infoEndereco').innerText + ', ' + document.getElementById('infoNumero').innerText;
+            const bairro = document.getElementById('infoBairro').innerText;
+            const cidade = document.getElementById('infoCidade').innerText;
+
+            // 2. Coleta os dados da Receita (do modal aberto)
+            const dataReceita = document.getElementById('modal_data_receita').value.split('-').reverse().join('/');
+            const medico = document.getElementById('modal_medico').value;
+            const obs = document.getElementById('modal_obs').value;
+            const lentes = document.getElementById('modal_lentes').value;
+            const adicao = document.getElementById('modal_adicao').value || '';
+
+            // Helper para pegar valor (se vazio, poe traço)
+            const v = (id) => document.getElementById(id).value || '&nbsp;';
+
+            // 3. Monta o HTML da Impressão
+            const conteudo = `
+                <html>
+                <head>
+                    <title>Impressão - Óticas Martinelli</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; color: #000; }
+                        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #006400; padding-bottom: 10px; }
+                        .logo { font-size: 24px; font-weight: bold; color: #006400; text-transform: uppercase; }
+                        .sub-header { font-size: 12px; color: #555; margin-top: 5px; }
+                        
+                        .box-info { border: 1px solid #000; padding: 10px; margin-bottom: 20px; border-radius: 5px; }
+                        .box-title { font-weight: bold; background: #eee; padding: 5px; margin: -10px -10px 10px -10px; border-bottom: 1px solid #000; font-size: 14px; }
+                        
+                        .row { display: flex; margin-bottom: 8px; }
+                        .col { flex: 1; }
+                        .label { font-weight: bold; font-size: 12px; margin-right: 5px; }
+                        .dado { border-bottom: 1px solid #ccc; padding-left: 5px; padding-right: 10px; font-size: 14px; }
+
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center; font-size: 12px; }
+                        th, td { border: 1px solid #000; padding: 8px 2px; }
+                        th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
+                        
+                        .assinatura { margin-top: 60px; text-align: center; }
+                        .line-sig { border-top: 1px solid #000; width: 250px; display: inline-block; padding-top: 5px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">Óticas Martinelli</div>
+                        <div class="sub-header">Excelência em visão e qualidade</div>
+                    </div>
+
+                    <div class="box-info">
+                        <div class="box-title">DADOS DO CLIENTE</div>
+                        <div class="row">
+                            <div class="col"><span class="label">Cliente:</span> <span class="dado" style="width:100%">${nome}</span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col"><span class="label">CPF:</span> <span class="dado">${cpf}</span></div>
+                            <div class="col"><span class="label">Telefone:</span> <span class="dado">${tel}</span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col"><span class="label">Endereço:</span> <span class="dado">${endereco} - ${bairro} - ${cidade}</span></div>
+                        </div>
+                    </div>
+
+                    <div class="box-info">
+                        <div class="box-title">PRESCRIÇÃO MÉDICA</div>
+                        <div class="row">
+                            <div class="col"><span class="label">Data da Receita:</span> <span class="dado">${dataReceita}</span></div>
+                            <div class="col"><span class="label">Médico(a):</span> <span class="dado">${medico}</span></div>
+                        </div>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th width="10%"></th>
+                                    <th width="10%"></th>
+                                    <th>ESFÉRICO</th>
+                                    <th>CILÍNDRICO</th>
+                                    <th>EIXO</th>
+                                    <th>DNP</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2" style="font-weight:bold; background:#f0f0f0;">LONGE</td>
+                                    <td style="font-weight:bold;">O.D</td>
+                                    <td>${v('modal_longe_od_esf')}</td>
+                                    <td>${v('modal_longe_od_cil')}</td>
+                                    <td>${v('modal_longe_od_eixo')}</td>
+                                    <td>${v('modal_longe_od_dnp')}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold;">O.E</td>
+                                    <td>${v('modal_longe_oe_esf')}</td>
+                                    <td>${v('modal_longe_oe_cil')}</td>
+                                    <td>${v('modal_longe_oe_eixo')}</td>
+                                    <td>${v('modal_longe_oe_dnp')}</td>
+                                </tr>
+                                
+                                
+
+                                <tr>
+                                    <td rowspan="2" style="font-weight:bold; background:#f0f0f0;">PERTO</td>
+                                    <td style="font-weight:bold;">O.D</td>
+                                    <td>${v('modal_perto_od_esf')}</td>
+                                    <td>${v('modal_perto_od_cil')}</td>
+                                    <td>${v('modal_perto_od_eixo')}</td>
+                                    <td>${v('modal_perto_od_dnp')}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold;">O.E</td>
+                                    <td>${v('modal_perto_oe_esf')}</td>
+                                    <td>${v('modal_perto_oe_cil')}</td>
+                                    <td>${v('modal_perto_oe_eixo')}</td>
+                                    <td>${v('modal_perto_oe_dnp')}</td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2" style="font-weight:bold; background:#f0f0f0;">ADIÇÃO</td>
+                                    <td colspan="4" style="font-weight:bold;">${adicao}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="box-info">
+                        <div class="row">
+                            <div class="col"><span class="label">Lentes/Descrição:</span> <span class="dado">${lentes}</span></div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col"><span class="label">Observações:</span> <div style="border:1px solid #ccc; height:50px; padding:5px; margin-top:5px;">${obs}</div></div>
+                        </div>
+                    </div>
+
+                    <div class="assinatura">
+                        <div class="line-sig">Assinatura / Óticas Martinelli</div>
+                    </div>
+
+                </body>
+                </html>
+            `;
+
+            // 4. Abre janela, escreve e imprime
+            const janela = window.open('', '', 'height=600,width=800');
+            janela.document.write(conteudo);
+            janela.document.close();
+
+            // Espera carregar e imprime
+            janela.onload = function () {
+                janela.print();
+                janela.onafterprint = function () {
+                    janela.close();
+                };
+            };
+        }
     </script>
 </body>
 
