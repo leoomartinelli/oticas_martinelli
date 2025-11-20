@@ -13,13 +13,45 @@ class Cliente
     public $telefone;
     public $cep;
     public $endereco;
+    public $numero; // <--- NOVO
+    public $bairro;
+    public $cidade;
 
     public function __construct($db)
     {
         $this->conn = $db;
     }
 
-    // 1. READ (Ler todos)
+    // CREATE
+    public function create()
+    {
+        $query = "INSERT INTO " . $this->table_name . " SET 
+            nome=:nome, data_nascimento=:data_nascimento, cpf=:cpf, rg=:rg, 
+            email=:email, telefone=:telefone, cep=:cep, 
+            endereco=:endereco, numero=:numero, bairro=:bairro, cidade=:cidade"; // Adicionado numero
+
+        $stmt = $this->conn->prepare($query);
+
+        $this->nome = htmlspecialchars(strip_tags($this->nome));
+
+        $stmt->bindParam(":nome", $this->nome);
+        $stmt->bindParam(":data_nascimento", $this->data_nascimento);
+        $stmt->bindParam(":cpf", $this->cpf);
+        $stmt->bindParam(":rg", $this->rg);
+        $stmt->bindParam(":email", $this->email);
+        $stmt->bindParam(":telefone", $this->telefone);
+        $stmt->bindParam(":cep", $this->cep);
+        $stmt->bindParam(":endereco", $this->endereco);
+        $stmt->bindParam(":numero", $this->numero); // <--- Bind NOVO
+        $stmt->bindParam(":bairro", $this->bairro);
+        $stmt->bindParam(":cidade", $this->cidade);
+
+        if ($stmt->execute())
+            return true;
+        return false;
+    }
+
+    // READ (Sem alterações)
     public function read()
     {
         $query = "SELECT * FROM " . $this->table_name . " ORDER BY id DESC";
@@ -28,50 +60,17 @@ class Cliente
         return $stmt;
     }
 
-    // 2. CREATE (Criar)
-    public function create()
-    {
-        $query = "INSERT INTO " . $this->table_name . " SET nome=:nome, data_nascimento=:data_nascimento, cpf=:cpf, rg=:rg, email=:email, telefone=:telefone, cep=:cep, endereco=:endereco";
-
-        $stmt = $this->conn->prepare($query);
-
-        // Limpar dados (segurança básica)
-        $this->nome = htmlspecialchars(strip_tags($this->nome));
-        // ... faça isso para os outros campos se quiser ser rigoroso
-
-        // Bind dos valores
-        $stmt->bindParam(":nome", $this->nome);
-        $stmt->bindParam(":data_nascimento", $this->data_nascimento);
-        $stmt->bindParam(":cpf", $this->cpf);
-        $stmt->bindParam(":rg", $this->rg);
-        $stmt->bindParam(":email", $this->email);
-        $stmt->bindParam(":telefone", $this->telefone);
-        $stmt->bindParam(":cep", $this->cep);
-        $stmt->bindParam(":endereco", $this->endereco);
-
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
-    }
-
-    // 3. UPDATE (Atualizar)
+    // UPDATE
     public function update()
     {
         $query = "UPDATE " . $this->table_name . " SET 
-            nome=:nome, 
-            data_nascimento=:data_nascimento, 
-            cpf=:cpf, 
-            rg=:rg, 
-            email=:email, 
-            telefone=:telefone, 
-            cep=:cep, 
-            endereco=:endereco 
+            nome=:nome, data_nascimento=:data_nascimento, cpf=:cpf, rg=:rg, 
+            email=:email, telefone=:telefone, cep=:cep, 
+            endereco=:endereco, numero=:numero, bairro=:bairro, cidade=:cidade 
             WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
 
-        // Bind dos valores
         $stmt->bindParam(":nome", $this->nome);
         $stmt->bindParam(":data_nascimento", $this->data_nascimento);
         $stmt->bindParam(":cpf", $this->cpf);
@@ -80,49 +79,42 @@ class Cliente
         $stmt->bindParam(":telefone", $this->telefone);
         $stmt->bindParam(":cep", $this->cep);
         $stmt->bindParam(":endereco", $this->endereco);
+        $stmt->bindParam(":numero", $this->numero); // <--- Bind NOVO
+        $stmt->bindParam(":bairro", $this->bairro);
+        $stmt->bindParam(":cidade", $this->cidade);
         $stmt->bindParam(":id", $this->id);
 
-        if ($stmt->execute()) {
+        if ($stmt->execute())
             return true;
-        }
         return false;
     }
 
-    // 4. DELETE (Deletar)
+    // DELETE (Sem alterações)
     public function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->id);
-
-        if ($stmt->execute()) {
+        if ($stmt->execute())
             return true;
-        }
         return false;
     }
 
+    // SEARCH (Sem alterações)
     public function search($keywords)
     {
-        // A query busca se o termo aparece no nome OU cpf OU telefone
-        $query = "SELECT * FROM " . $this->table_name . " 
-                  WHERE nome LIKE ? OR cpf LIKE ? OR telefone LIKE ? 
-                  ORDER BY nome ASC";
-
+        $query = "SELECT * FROM " . $this->table_name . " WHERE nome LIKE ? OR cpf LIKE ? OR telefone LIKE ? ORDER BY nome ASC";
         $stmt = $this->conn->prepare($query);
-
-        // Limpa e adiciona os % para o LIKE funcionar (ex: %joao%)
         $keywords = htmlspecialchars(strip_tags($keywords));
         $term = "%{$keywords}%";
-
-        // Vincula o mesmo termo aos 3 parâmetros (?)
         $stmt->bindParam(1, $term);
         $stmt->bindParam(2, $term);
         $stmt->bindParam(3, $term);
-
         $stmt->execute();
         return $stmt;
     }
 
+    // READ ONE (Sem alterações)
     public function readOne()
     {
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = ? LIMIT 0,1";
