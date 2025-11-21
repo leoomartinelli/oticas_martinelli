@@ -39,7 +39,6 @@
             color: white;
         }
 
-        /* Inputs da Tabela */
         .tabela-otica input.no-border {
             border: none;
             background: transparent;
@@ -104,6 +103,18 @@
 </head>
 
 <body>
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055">
+        <div id="liveToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMensagem" style="font-weight: 500; font-size: 1rem;">
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-martinelli shadow-sm">
         <div class="container"><a class="navbar-brand fw-bold" href="#" onclick="mostrarLista()"><i
                     class="bi bi-eyeglasses"></i> Óticas Martinelli</a></div>
@@ -164,12 +175,10 @@
                                     oninput="mascaraCPF(this)"></div>
                             <div class="col-md-4"><label class="form-label">RG</label><input type="text"
                                     class="form-control" id="rg" maxlength="13" oninput="mascaraRG(this)"></div>
-
                             <div class="col-md-4"><label class="form-label">Telefone</label><input type="text"
                                     class="form-control" id="telefone"></div>
                             <div class="col-md-4"><label class="form-label">E-mail</label><input type="email"
                                     class="form-control" id="email"></div>
-
                             <div class="col-md-2"><label class="form-label">CEP</label><input type="text"
                                     class="form-control" id="cep" placeholder="00000-000"
                                     onblur="buscarCep(this.value, 'cadastro')"></div>
@@ -177,7 +186,6 @@
                                     class="form-control" id="cidade"></div>
                             <div class="col-md-5"><label class="form-label">Bairro</label><input type="text"
                                     class="form-control" id="bairro"></div>
-
                             <div class="col-md-9"><label class="form-label">Endereço (Rua)</label><input type="text"
                                     class="form-control" id="endereco"></div>
                             <div class="col-md-3"><label class="form-label">Número</label><input type="text"
@@ -256,7 +264,6 @@
                                 <div class="col-md-9"><label class="fw-bold small text-uppercase">Receita do
                                         Dr(a).</label><input type="text" id="medico" class="form-control"></div>
                             </div>
-
                             <div class="table-responsive border rounded mb-3">
                                 <table class="table table-bordered text-center align-middle tabela-otica mb-0">
                                     <thead class="bg-light">
@@ -465,22 +472,14 @@
                     </form>
                 </div>
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary me-auto" onclick="imprimirReceita()">
-                        <i class="bi bi-printer-fill"></i> Imprimir
-                    </button>
-
-                    <button type="button" id="btnExcluirReceita" class="btn btn-outline-danger">
-                        <i class="bi bi-trash"></i> Excluir
-                    </button>
-
+                    <button type="button" class="btn btn-secondary me-auto" onclick="imprimirReceita()"><i
+                            class="bi bi-printer-fill"></i> Imprimir</button>
+                    <button type="button" id="btnExcluirReceita" class="btn btn-outline-danger"><i
+                            class="bi bi-trash"></i> Excluir</button>
                     <button type="button" id="btnEditarReceita" class="btn btn-warning text-dark"
-                        onclick="habilitarEdicao()">
-                        <i class="bi bi-pencil"></i> Editar
-                    </button>
-
-                    <button type="button" id="btnSalvarEdicao" class="btn btn-success d-none" onclick="salvarEdicao()">
-                        <i class="bi bi-check-lg"></i> Salvar Alterações
-                    </button>
+                        onclick="habilitarEdicao()"><i class="bi bi-pencil"></i> Editar</button>
+                    <button type="button" id="btnSalvarEdicao" class="btn btn-success d-none"
+                        onclick="salvarEdicao()"><i class="bi bi-check-lg"></i> Salvar Alterações</button>
                 </div>
             </div>
         </div>
@@ -512,7 +511,6 @@
                         </div>
                         <div class="mb-2"><label class="form-label small fw-bold">Email</label><input type="email"
                                 id="edit_email" class="form-control"></div>
-
                         <div class="row mb-2">
                             <div class="col-4"><label class="form-label small fw-bold">CEP</label><input type="text"
                                     id="edit_cep" class="form-control" onblur="buscarCep(this.value, 'edicao')"></div>
@@ -546,25 +544,25 @@
         document.getElementById('inputBusca').addEventListener('keypress', function (e) { if (e.key === 'Enter') filtrarClientes(); });
         function limparBusca() { document.getElementById('inputBusca').value = ''; carregarClientes(); }
 
+        // === NOTIFICAÇÕES ===
+        function exibirNotificacao(msg, tipo) {
+            const toastEl = document.getElementById('liveToast');
+            const toastBody = document.getElementById('toastMensagem');
+
+            toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+
+            if (tipo === 'sucesso') toastEl.classList.add('bg-success');
+            else if (tipo === 'erro') toastEl.classList.add('bg-danger');
+            else toastEl.classList.add('bg-warning');
+
+            toastBody.innerText = msg;
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+
         // === MÁSCARAS ===
-        function mascaraCPF(i) {
-            var v = i.value;
-            if (isNaN(v[v.length - 1])) { i.value = v.substring(0, v.length - 1); return; }
-            i.setAttribute("maxlength", "14");
-            v = v.replace(/\D/g, "");
-            v = v.replace(/(\d{3})(\d)/, "$1.$2");
-            v = v.replace(/(\d{3})(\d)/, "$1.$2");
-            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-            i.value = v;
-        }
-        function mascaraRG(i) {
-            var v = i.value;
-            v = v.replace(/\D/g, "");
-            v = v.replace(/(\d{2})(\d)/, "$1.$2");
-            v = v.replace(/(\d{3})(\d)/, "$1.$2");
-            v = v.replace(/(\d{3})(\d{1})$/, "$1-$2");
-            i.value = v;
-        }
+        function mascaraCPF(i) { var v = i.value; if (isNaN(v[v.length - 1])) { i.value = v.substring(0, v.length - 1); return; } i.setAttribute("maxlength", "14"); v = v.replace(/\D/g, ""); v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); i.value = v; }
+        function mascaraRG(i) { var v = i.value; v = v.replace(/\D/g, ""); v = v.replace(/(\d{2})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d)/, "$1.$2"); v = v.replace(/(\d{3})(\d{1})$/, "$1-$2"); i.value = v; }
         function addGrau(i) { if (i.value && !i.value.includes('º')) i.value = i.value + 'º'; }
         function removeGrau(i) { i.value = i.value.replace('º', ''); }
 
@@ -588,18 +586,29 @@
                 if (res.ok) {
                     const data = await res.json(); tbody.innerHTML = '';
                     if (data.dados && data.dados.length > 0) {
-                        data.dados.forEach(c => { tbody.innerHTML += `<tr><td>${c.id}</td><td class="fw-bold text-start text-uppercase">${c.nome}</td><td>${c.cpf || '-'}</td><td>${c.telefone || '-'}</td><td><button class="btn btn-sm btn-outline-success me-1" onclick="abrirReceita(${c.id},'${c.nome}')"><i class="bi bi-eye"></i> Receitas</button><button class="btn btn-sm btn-outline-danger" onclick="deletarCliente(${c.id})"><i class="bi bi-trash"></i></button></td></tr>`; });
+                        data.dados.forEach(c => { tbody.innerHTML += `<tr><td>${c.id}</td><td class="fw-bold text-start text-uppercase">${c.nome}</td><td>${c.cpf || '-'}</td><td>${c.telefone || '-'}</td><td><button class="btn btn-sm btn-outline-success me-1" onclick="abrirReceita(${c.id},'${c.nome}')"><i class="bi bi-eye"></i> Ver Detalhes</button><button class="btn btn-sm btn-outline-danger" onclick="deletarCliente(${c.id})"><i class="bi bi-trash"></i></button></td></tr>`; });
                     } else tbody.innerHTML = `<tr><td colspan="5" class="text-muted py-4">Nada encontrado.${termo ? '<br><button class="btn btn-sm btn-outline-secondary mt-2" onclick="limparBusca()">Limpar</button>' : ''}</td></tr>`;
                 } else tbody.innerHTML = '<tr><td colspan="5">Erro.</td></tr>';
             } catch (e) { tbody.innerHTML = '<tr><td colspan="5">Erro conexão.</td></tr>'; }
         }
 
+        // === SALVAR CLIENTE COM TRATAMENTO DE ERRO ===
         document.getElementById('formCliente').addEventListener('submit', async (e) => {
             e.preventDefault();
             const c = { nome: document.getElementById('nome').value, data_nascimento: document.getElementById('nascimento').value, cpf: document.getElementById('cpf').value, rg: document.getElementById('rg').value, telefone: document.getElementById('telefone').value, email: document.getElementById('email').value, cep: document.getElementById('cep').value, endereco: document.getElementById('endereco').value, numero: document.getElementById('numero').value, bairro: document.getElementById('bairro').value, cidade: document.getElementById('cidade').value };
+
             const res = await fetch(`${API_URL}/clientes`, { method: 'POST', body: JSON.stringify(c) });
-            if (res.ok) { alert('Salvo!'); mostrarLista(); } else alert('Erro.');
+            const data = await res.json(); // Agora lemos o JSON de resposta
+
+            if (res.ok) {
+                exibirNotificacao(data.mensagem, 'sucesso');
+                mostrarLista();
+            } else {
+                // Pega a mensagem exata que o PHP mandou (ex: "CPF duplicado")
+                exibirNotificacao(data.mensagem || 'Erro ao salvar.', 'erro');
+            }
         });
+
         async function deletarCliente(id) { if (confirm('Apagar cliente e receitas?')) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); carregarClientes(); } }
 
         async function abrirReceita(id, nome_bkp) {
@@ -621,7 +630,7 @@
             const r = {
                 cliente_id: document.getElementById('receitaClienteId').value, data_receita: document.getElementById('dataReceita').value, medico: document.getElementById('medico').value, adicao: document.getElementById('adicao').value,
                 longe_od_esferico: document.getElementById('longe_od_esf').value, longe_od_cilindrico: document.getElementById('longe_od_cil').value,
-                longe_od_eixo: document.getElementById('longe_od_eixo').value.replace('º', ''), // LIMPA O GRAU ANTES DE SALVAR
+                longe_od_eixo: document.getElementById('longe_od_eixo').value.replace('º', ''),
                 longe_od_dnp: document.getElementById('longe_od_dnp').value,
                 longe_oe_esferico: document.getElementById('longe_oe_esf').value, longe_oe_cilindrico: document.getElementById('longe_oe_cil').value,
                 longe_oe_eixo: document.getElementById('longe_oe_eixo').value.replace('º', ''),
@@ -635,7 +644,16 @@
                 lentes_desc: document.getElementById('lentesDesc').value, observacoes: document.getElementById('observacoes').value
             };
             const res = await fetch(`${API_URL}/receitas`, { method: 'POST', body: JSON.stringify(r) });
-            if (res.ok) { alert('Receita Salva!'); carregarHistoricoReceitas(r.cliente_id); alternarFormularioReceita(false); } else alert('Erro.');
+            if (res.ok) {
+                exibirNotificacao('Receita Salva com Sucesso!', 'sucesso');
+                carregarHistoricoReceitas(r.cliente_id);
+                alternarFormularioReceita(false);
+                document.getElementById('formReceita').reset();
+                document.getElementById('dataReceita').valueAsDate = new Date();
+                document.getElementById('receitaClienteId').value = r.cliente_id;
+            } else {
+                exibirNotificacao('Erro ao salvar receita.', 'erro');
+            }
         });
 
         async function carregarHistoricoReceitas(cid) {
@@ -654,7 +672,6 @@
             const res = await fetch(`${API_URL}/receitas/${id}`); if (!res.ok) return alert('Erro'); const r = await res.json(); receitaAtualId = r.id;
             document.getElementById('modal_receita_id').value = r.id; document.getElementById('modal_cliente_id').value = r.cliente_id; document.getElementById('modal_data_receita').value = r.data_receita; document.getElementById('modal_medico').value = r.medico; document.getElementById('modal_adicao').value = r.adicao;
 
-            // Preenche e ADICIONA O º SE TIVER VALOR
             document.getElementById('modal_longe_od_esf').value = r.longe_od_esferico; document.getElementById('modal_longe_od_cil').value = r.longe_od_cilindrico;
             document.getElementById('modal_longe_od_eixo').value = r.longe_od_eixo ? r.longe_od_eixo + 'º' : '';
             document.getElementById('modal_longe_od_dnp').value = r.longe_od_dnp;
@@ -697,7 +714,12 @@
                 perto_oe_dnp: document.getElementById('modal_perto_oe_dnp').value,
                 lentes_desc: document.getElementById('modal_lentes').value, observacoes: document.getElementById('modal_obs').value
             };
-            const res = await fetch(`${API_URL}/receitas/${id}`, { method: 'PUT', body: JSON.stringify(r) }); if (res.ok) { alert('Atualizado!'); bootstrap.Modal.getInstance(document.getElementById('modalReceitaDetalhes')).hide(); carregarHistoricoReceitas(r.cliente_id); } else alert('Erro.');
+            const res = await fetch(`${API_URL}/receitas/${id}`, { method: 'PUT', body: JSON.stringify(r) });
+            if (res.ok) {
+                exibirNotificacao('Receita atualizada!', 'sucesso');
+                bootstrap.Modal.getInstance(document.getElementById('modalReceitaDetalhes')).hide();
+                carregarHistoricoReceitas(r.cliente_id);
+            } else { exibirNotificacao('Erro ao atualizar.', 'erro'); }
         }
 
         async function deletarReceita(id, cid) { if (confirm('Apagar?')) { const res = await fetch(`${API_URL}/receitas/${id}`, { method: 'DELETE' }); if (res.ok) { bootstrap.Modal.getInstance(document.getElementById('modalReceitaDetalhes')).hide(); carregarHistoricoReceitas(cid); } } }
@@ -713,169 +735,62 @@
         document.getElementById('formEditarClienteModal').addEventListener('submit', async (e) => {
             e.preventDefault(); const id = document.getElementById('edit_id').value;
             const c = { nome: document.getElementById('edit_nome').value, data_nascimento: document.getElementById('edit_nascimento').value, cpf: document.getElementById('edit_cpf').value, rg: document.getElementById('edit_rg').value, telefone: document.getElementById('edit_telefone').value, email: document.getElementById('edit_email').value, cep: document.getElementById('edit_cep').value, endereco: document.getElementById('edit_endereco').value, numero: document.getElementById('edit_numero').value, bairro: document.getElementById('edit_bairro').value, cidade: document.getElementById('edit_cidade').value };
-            const res = await fetch(`${API_URL}/clientes/${id}`, { method: 'PUT', body: JSON.stringify(c) }); if (res.ok) { alert('Cliente Atualizado!'); bootstrap.Modal.getInstance(document.getElementById('modalEditarCliente')).hide(); abrirReceita(id, c.nome); } else alert('Erro.');
+            const res = await fetch(`${API_URL}/clientes/${id}`, { method: 'PUT', body: JSON.stringify(c) });
+            if (res.ok) {
+                exibirNotificacao('Cliente Atualizado!', 'sucesso');
+                bootstrap.Modal.getInstance(document.getElementById('modalEditarCliente')).hide();
+                abrirReceita(id, c.nome);
+            } else { exibirNotificacao('Erro ao atualizar.', 'erro'); }
         });
 
-        mostrarLista();
-
-
         function imprimirReceita() {
-            // 1. Coleta os dados do Cliente (da tela de fundo)
             const nome = document.getElementById('infoNome').innerText;
             const cpf = document.getElementById('infoCpf').innerText;
             const tel = document.getElementById('infoTelefone').innerText;
             const endereco = document.getElementById('infoEndereco').innerText + ', ' + document.getElementById('infoNumero').innerText;
             const bairro = document.getElementById('infoBairro').innerText;
             const cidade = document.getElementById('infoCidade').innerText;
-
-            // 2. Coleta os dados da Receita (do modal aberto)
             const dataReceita = document.getElementById('modal_data_receita').value.split('-').reverse().join('/');
             const medico = document.getElementById('modal_medico').value;
             const obs = document.getElementById('modal_obs').value;
             const lentes = document.getElementById('modal_lentes').value;
             const adicao = document.getElementById('modal_adicao').value || '';
-
-            // Helper para pegar valor (se vazio, poe traço)
             const v = (id) => document.getElementById(id).value || '&nbsp;';
 
-            // 3. Monta o HTML da Impressão
             const conteudo = `
-                <html>
-                <head>
-                    <title>Impressão - Óticas Martinelli</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; color: #000; }
-                        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #006400; padding-bottom: 10px; }
-                        .logo { font-size: 24px; font-weight: bold; color: #006400; text-transform: uppercase; }
-                        .sub-header { font-size: 12px; color: #555; margin-top: 5px; }
-                        
-                        .box-info { border: 1px solid #000; padding: 10px; margin-bottom: 20px; border-radius: 5px; }
-                        .box-title { font-weight: bold; background: #eee; padding: 5px; margin: -10px -10px 10px -10px; border-bottom: 1px solid #000; font-size: 14px; }
-                        
-                        .row { display: flex; margin-bottom: 8px; }
-                        .col { flex: 1; }
-                        .label { font-weight: bold; font-size: 12px; margin-right: 5px; }
-                        .dado { border-bottom: 1px solid #ccc; padding-left: 5px; padding-right: 10px; font-size: 14px; }
-
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center; font-size: 12px; }
-                        th, td { border: 1px solid #000; padding: 8px 2px; }
-                        th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
-                        
-                        .assinatura { margin-top: 60px; text-align: center; }
-                        .line-sig { border-top: 1px solid #000; width: 250px; display: inline-block; padding-top: 5px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <div class="logo">Óticas Martinelli</div>
-                        <div class="sub-header">Excelência em visão e qualidade</div>
+                <html><head><title>Impressão</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; color: #000; }
+                    .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #006400; padding-bottom: 10px; }
+                    .logo { font-size: 24px; font-weight: bold; color: #006400; text-transform: uppercase; }
+                    .box-info { border: 1px solid #000; padding: 10px; margin-bottom: 20px; border-radius: 5px; }
+                    .box-title { font-weight: bold; background: #eee; padding: 5px; margin: -10px -10px 10px -10px; border-bottom: 1px solid #000; font-size: 14px; }
+                    .row { display: flex; margin-bottom: 8px; } .col { flex: 1; }
+                    .label { font-weight: bold; font-size: 12px; margin-right: 5px; } .dado { border-bottom: 1px solid #ccc; font-size: 14px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center; font-size: 12px; }
+                    th, td { border: 1px solid #000; padding: 8px 2px; } th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
+                    .assinatura { margin-top: 60px; text-align: center; } .line-sig { border-top: 1px solid #000; width: 250px; display: inline-block; padding-top: 5px; }
+                </style></head><body>
+                    <div class="header"><div class="logo">Óticas Martinelli</div></div>
+                    <div class="box-info"><div class="box-title">DADOS DO CLIENTE</div><div class="row"><div class="col"><span class="label">Cliente:</span> <span class="dado">${nome}</span></div></div><div class="row"><div class="col"><span class="label">CPF:</span> <span class="dado">${cpf}</span></div><div class="col"><span class="label">Telefone:</span> <span class="dado">${tel}</span></div></div><div class="row"><div class="col"><span class="label">Endereço:</span> <span class="dado">${endereco} - ${bairro} - ${cidade}</span></div></div></div>
+                    <div class="box-info"><div class="box-title">PRESCRIÇÃO</div><div class="row"><div class="col"><span class="label">Data:</span> <span class="dado">${dataReceita}</span></div><div class="col"><span class="label">Médico:</span> <span class="dado">${medico}</span></div></div>
+                        <table><thead><tr><th width="10%"></th><th width="10%"></th><th>ESFÉRICO</th><th>CILÍNDRICO</th><th>EIXO</th><th>DNP</th></tr></thead><tbody>
+                            <tr><td rowspan="2" style="font-weight:bold; background:#f0f0f0;">LONGE</td><td style="font-weight:bold;">O.D</td><td>${v('modal_longe_od_esf')}</td><td>${v('modal_longe_od_cil')}</td><td>${v('modal_longe_od_eixo')}</td><td>${v('modal_longe_od_dnp')}</td></tr>
+                            <tr><td style="font-weight:bold;">O.E</td><td>${v('modal_longe_oe_esf')}</td><td>${v('modal_longe_oe_cil')}</td><td>${v('modal_longe_oe_eixo')}</td><td>${v('modal_longe_oe_dnp')}</td></tr>
+                            
+                            <tr><td rowspan="2" style="font-weight:bold; background:#f0f0f0;">PERTO</td><td style="font-weight:bold;">O.D</td><td>${v('modal_perto_od_esf')}</td><td>${v('modal_perto_od_cil')}</td><td>${v('modal_perto_od_eixo')}</td><td>${v('modal_perto_od_dnp')}</td></tr>
+                            <tr><td style="font-weight:bold;">O.E</td><td>${v('modal_perto_oe_esf')}</td><td>${v('modal_perto_oe_cil')}</td><td>${v('modal_perto_oe_eixo')}</td><td>${v('modal_perto_oe_dnp')}</td></tr>
+                            <tr><td colspan="2" style="font-weight:bold; background:#f0f0f0;">ADIÇÃO</td><td colspan="4" style="font-weight:bold;">${adicao}</td></tr>
+                            </tbody></table>
                     </div>
-
-                    <div class="box-info">
-                        <div class="box-title">DADOS DO CLIENTE</div>
-                        <div class="row">
-                            <div class="col"><span class="label">Cliente:</span> <span class="dado" style="width:100%">${nome}</span></div>
-                        </div>
-                        <div class="row">
-                            <div class="col"><span class="label">CPF:</span> <span class="dado">${cpf}</span></div>
-                            <div class="col"><span class="label">Telefone:</span> <span class="dado">${tel}</span></div>
-                        </div>
-                        <div class="row">
-                            <div class="col"><span class="label">Endereço:</span> <span class="dado">${endereco} - ${bairro} - ${cidade}</span></div>
-                        </div>
-                    </div>
-
-                    <div class="box-info">
-                        <div class="box-title">PRESCRIÇÃO MÉDICA</div>
-                        <div class="row">
-                            <div class="col"><span class="label">Data da Receita:</span> <span class="dado">${dataReceita}</span></div>
-                            <div class="col"><span class="label">Médico(a):</span> <span class="dado">${medico}</span></div>
-                        </div>
-
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th width="10%"></th>
-                                    <th width="10%"></th>
-                                    <th>ESFÉRICO</th>
-                                    <th>CILÍNDRICO</th>
-                                    <th>EIXO</th>
-                                    <th>DNP</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td rowspan="2" style="font-weight:bold; background:#f0f0f0;">LONGE</td>
-                                    <td style="font-weight:bold;">O.D</td>
-                                    <td>${v('modal_longe_od_esf')}</td>
-                                    <td>${v('modal_longe_od_cil')}</td>
-                                    <td>${v('modal_longe_od_eixo')}</td>
-                                    <td>${v('modal_longe_od_dnp')}</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight:bold;">O.E</td>
-                                    <td>${v('modal_longe_oe_esf')}</td>
-                                    <td>${v('modal_longe_oe_cil')}</td>
-                                    <td>${v('modal_longe_oe_eixo')}</td>
-                                    <td>${v('modal_longe_oe_dnp')}</td>
-                                </tr>
-                                
-                                
-
-                                <tr>
-                                    <td rowspan="2" style="font-weight:bold; background:#f0f0f0;">PERTO</td>
-                                    <td style="font-weight:bold;">O.D</td>
-                                    <td>${v('modal_perto_od_esf')}</td>
-                                    <td>${v('modal_perto_od_cil')}</td>
-                                    <td>${v('modal_perto_od_eixo')}</td>
-                                    <td>${v('modal_perto_od_dnp')}</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight:bold;">O.E</td>
-                                    <td>${v('modal_perto_oe_esf')}</td>
-                                    <td>${v('modal_perto_oe_cil')}</td>
-                                    <td>${v('modal_perto_oe_eixo')}</td>
-                                    <td>${v('modal_perto_oe_dnp')}</td>
-                                </tr>
-
-                                <tr>
-                                    <td colspan="2" style="font-weight:bold; background:#f0f0f0;">ADIÇÃO</td>
-                                    <td colspan="4" style="font-weight:bold;">${adicao}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="box-info">
-                        <div class="row">
-                            <div class="col"><span class="label">Lentes/Descrição:</span> <span class="dado">${lentes}</span></div>
-                        </div>
-                        <div class="row" style="margin-top:10px">
-                            <div class="col"><span class="label">Observações:</span> <div style="border:1px solid #ccc; height:50px; padding:5px; margin-top:5px;">${obs}</div></div>
-                        </div>
-                    </div>
-
-                    <div class="assinatura">
-                        <div class="line-sig">Assinatura / Óticas Martinelli</div>
-                    </div>
-
-                </body>
-                </html>
-            `;
-
-            // 4. Abre janela, escreve e imprime
-            const janela = window.open('', '', 'height=600,width=800');
-            janela.document.write(conteudo);
-            janela.document.close();
-
-            // Espera carregar e imprime
-            janela.onload = function () {
-                janela.print();
-                janela.onafterprint = function () {
-                    janela.close();
-                };
-            };
+                    <div class="box-info"><div class="row"><div class="col"><span class="label">Lentes:</span> <span class="dado">${lentes}</span></div></div><div class="row" style="margin-top:10px"><div class="col"><span class="label">Obs:</span> <div>${obs}</div></div></div></div>
+                    <div class="assinatura"><div class="line-sig">Assinatura</div></div>
+                </body></html>`;
+            const j = window.open('', '', 'height=600,width=800'); j.document.write(conteudo); j.document.close();
+            j.onload = function () { j.print(); j.onafterprint = function () { j.close(); }; };
         }
+
+        mostrarLista();
     </script>
 </body>
 

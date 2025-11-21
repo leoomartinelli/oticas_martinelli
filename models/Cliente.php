@@ -28,12 +28,12 @@ class Cliente
         $query = "INSERT INTO " . $this->table_name . " SET 
             nome=:nome, data_nascimento=:data_nascimento, cpf=:cpf, rg=:rg, 
             email=:email, telefone=:telefone, cep=:cep, 
-            endereco=:endereco, numero=:numero, bairro=:bairro, cidade=:cidade"; // Adicionado numero
+            endereco=:endereco, numero=:numero, bairro=:bairro, cidade=:cidade";
 
         $stmt = $this->conn->prepare($query);
 
+        // Limpeza e Binds (Igual ao anterior)
         $this->nome = htmlspecialchars(strip_tags($this->nome));
-
         $stmt->bindParam(":nome", $this->nome);
         $stmt->bindParam(":data_nascimento", $this->data_nascimento);
         $stmt->bindParam(":cpf", $this->cpf);
@@ -42,13 +42,21 @@ class Cliente
         $stmt->bindParam(":telefone", $this->telefone);
         $stmt->bindParam(":cep", $this->cep);
         $stmt->bindParam(":endereco", $this->endereco);
-        $stmt->bindParam(":numero", $this->numero); // <--- Bind NOVO
+        $stmt->bindParam(":numero", $this->numero);
         $stmt->bindParam(":bairro", $this->bairro);
         $stmt->bindParam(":cidade", $this->cidade);
 
-        if ($stmt->execute())
-            return true;
-        return false;
+        try {
+            if ($stmt->execute()) {
+                return "sucesso";
+            }
+        } catch (PDOException $e) {
+            // O código 1062 no MySQL significa "Duplicate Entry" (Dado duplicado)
+            if ($e->errorInfo[1] == 1062) {
+                return "duplicado";
+            }
+        }
+        return "erro";
     }
 
     // READ (Sem alterações)
