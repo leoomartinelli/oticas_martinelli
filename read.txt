@@ -1,1 +1,40 @@
 primeiro commit
+
+
+
+CREATE TABLE IF NOT EXISTS pedidos_lente (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    numero_os VARCHAR(20) NOT NULL,
+    data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Olho Direito
+    od_esferico VARCHAR(10),
+    od_cilindrico VARCHAR(10),
+    od_eixo VARCHAR(10),
+    od_dnp VARCHAR(10),
+    
+    -- Olho Esquerdo
+    oe_esferico VARCHAR(10),
+    oe_cilindrico VARCHAR(10),
+    oe_eixo VARCHAR(10),
+    oe_dnp VARCHAR(10),
+    
+    adicao VARCHAR(10),
+    
+    -- Medidas da Armação
+    medida_dp VARCHAR(10),
+    medida_mha VARCHAR(10),
+    medida_mva VARCHAR(10),
+    medida_dma VARCHAR(10),
+    medida_ponte VARCHAR(10),
+    medida_altura VARCHAR(10),
+    tipo_armacao VARCHAR(100), -- Ex: Acetato Fechado
+    
+    descricao_lentes TEXT, -- Ex: Multifocais CR/AR Blue
+    status_envio VARCHAR(50) DEFAULT 'pendente', -- Para saber se foi pro webhook
+    
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
+);
+
+ALTER TABLE pedidos_lente ADD COLUMN status VARCHAR(50) DEFAULT 'Lente Solicitada';

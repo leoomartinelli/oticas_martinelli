@@ -99,6 +99,17 @@
             color: #006400;
             letter-spacing: 2px;
         }
+
+        /* Estilo para as abas novas */
+        .nav-tabs .nav-link.active {
+            color: var(--cor-primaria);
+            font-weight: bold;
+            border-top: 3px solid var(--cor-primaria);
+        }
+
+        .nav-tabs .nav-link {
+            color: #555;
+        }
     </style>
 </head>
 
@@ -207,6 +218,7 @@
                 <button class="btn btn-outline-secondary btn-sm" onclick="voltarParaLista()"><i
                         class="bi bi-arrow-left"></i> Voltar</button>
             </div>
+
             <div class="card shadow-sm border-0 border-start border-5 border-success mb-4 bg-white">
                 <div class="card-body">
                     <div class="row">
@@ -240,120 +252,275 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-secondary mb-0">Histórico de Receitas</h5>
-                <button id="btnMostrarForm" class="btn btn-martinelli shadow-sm"
-                    onclick="alternarFormularioReceita(true)"><i class="bi bi-plus-lg"></i> Nova Receita</button>
-            </div>
+            <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="receitas-tab" data-bs-toggle="tab"
+                        data-bs-target="#tab-receitas" type="button"><i class="bi bi-file-medical"></i> Histórico de
+                        Receitas</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="pedidos-tab" data-bs-toggle="tab" data-bs-target="#tab-pedidos"
+                        type="button"><i class="bi bi-box-seam"></i> Pedidos de Lente (OS)</button>
+                </li>
+            </ul>
 
-            <div id="area-nova-receita" class="d-none mb-5">
-                <div class="card shadow border-success border-2">
-                    <div
-                        class="card-header bg-white text-success fw-bold d-flex justify-content-between align-items-center">
-                        <span><i class="bi bi-file-earmark-plus"></i> Preencher Nova Receita</span>
-                        <button class="btn btn-sm btn-outline-danger" onclick="alternarFormularioReceita(false)"><i
-                                class="bi bi-x-lg"></i> Cancelar</button>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="tab-receitas">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-secondary mb-0">Receitas Médicas</h5>
+                        <button id="btnMostrarForm" class="btn btn-martinelli shadow-sm"
+                            onclick="alternarFormularioReceita(true)"><i class="bi bi-plus-lg"></i> Nova
+                            Receita</button>
                     </div>
-                    <div class="card-body p-4">
-                        <form id="formReceita">
-                            <input type="hidden" id="receitaClienteId">
-                            <div class="row mb-4">
-                                <div class="col-md-3"><label class="fw-bold small text-uppercase">Data da
-                                        Receita</label><input type="date" id="dataReceita" class="form-control"
-                                        required></div>
-                                <div class="col-md-9"><label class="fw-bold small text-uppercase">Receita do
-                                        Dr(a).</label><input type="text" id="medico" class="form-control"></div>
-                            </div>
-                            <div class="table-responsive border rounded mb-3">
-                                <table class="table table-bordered text-center align-middle tabela-otica mb-0">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th style="width: 10%;"></th>
-                                            <th style="width: 10%;"></th>
-                                            <th>ESFÉRICO</th>
-                                            <th>CILÍNDRICO</th>
-                                            <th>EIXO</th>
-                                            <th>DNP</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td rowspan="2" class="fw-bold bg-light align-middle">LONGE</td>
-                                            <td class="fw-bold text-primary">O.D</td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="longe_od_esf" placeholder="0.00"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="longe_od_cil" placeholder="0.00"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="longe_od_eixo" placeholder="0º" onfocus="removeGrau(this)"
-                                                    onblur="addGrau(this)"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="longe_od_dnp" placeholder="mm"></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold text-primary">O.E</td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="longe_oe_esf" placeholder="0.00"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="longe_oe_cil" placeholder="0.00"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="longe_oe_eixo" placeholder="0º" onfocus="removeGrau(this)"
-                                                    onblur="addGrau(this)"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="longe_oe_dnp" placeholder="mm"></td>
-                                        </tr>
 
-                                        <tr>
-                                            <td rowspan="2" class="fw-bold bg-light align-middle">PERTO</td>
-                                            <td class="fw-bold text-primary">O.D</td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="perto_od_esf" placeholder="0.00"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="perto_od_cil" placeholder="0.00"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="perto_od_eixo" placeholder="0º" onfocus="removeGrau(this)"
-                                                    onblur="addGrau(this)"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="perto_od_dnp" placeholder="mm"></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold text-primary">O.E</td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="perto_oe_esf" placeholder="0.00"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="perto_oe_cil" placeholder="0.00"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="perto_oe_eixo" placeholder="0º" onfocus="removeGrau(this)"
-                                                    onblur="addGrau(this)"></td>
-                                            <td><input type="text" class="form-control no-border text-center"
-                                                    id="perto_oe_dnp" placeholder="mm"></td>
-                                        </tr>
-
-                                        <tr class="bg-add">
-                                            <td colspan="2" class="fw-bold text-end pe-3 align-middle">ADIÇÃO (ADD)</td>
-                                            <td colspan="4"><input type="text"
-                                                    class="form-control no-border text-center fw-bold text-success"
-                                                    id="adicao" placeholder="+0.00" style="font-size: 1.2rem;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                    <div id="area-nova-receita" class="d-none mb-5">
+                        <div class="card shadow border-success border-2">
+                            <div
+                                class="card-header bg-white text-success fw-bold d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-file-earmark-plus"></i> Preencher Nova Receita</span>
+                                <button class="btn btn-sm btn-outline-danger"
+                                    onclick="alternarFormularioReceita(false)"><i class="bi bi-x-lg"></i>
+                                    Cancelar</button>
                             </div>
-                            <div class="mt-3"><label class="fw-bold small">Lentes / Descrição</label><input type="text"
-                                    id="lentesDesc" class="form-control" placeholder="Ex: Multifocal Transition Cinza">
+                            <div class="card-body p-4">
+                                <form id="formReceita">
+                                    <input type="hidden" id="receitaClienteId">
+                                    <div class="row mb-4">
+                                        <div class="col-md-3"><label class="fw-bold small text-uppercase">Data da
+                                                Receita</label><input type="date" id="dataReceita" class="form-control"
+                                                required></div>
+                                        <div class="col-md-9"><label class="fw-bold small text-uppercase">Receita do
+                                                Dr(a).</label><input type="text" id="medico" class="form-control"></div>
+                                    </div>
+                                    <div class="table-responsive border rounded mb-3">
+                                        <table class="table table-bordered text-center align-middle tabela-otica mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th style="width: 10%;"></th>
+                                                    <th style="width: 10%;"></th>
+                                                    <th>ESFÉRICO</th>
+                                                    <th>CILÍNDRICO</th>
+                                                    <th>EIXO</th>
+                                                    <th>DNP</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td rowspan="2" class="fw-bold bg-light align-middle">LONGE</td>
+                                                    <td class="fw-bold text-primary">O.D</td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="longe_od_esf" placeholder="0.00"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="longe_od_cil" placeholder="0.00"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="longe_od_eixo" placeholder="0º"
+                                                            onfocus="removeGrau(this)" onblur="addGrau(this)"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="longe_od_dnp" placeholder="mm"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold text-primary">O.E</td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="longe_oe_esf" placeholder="0.00"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="longe_oe_cil" placeholder="0.00"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="longe_oe_eixo" placeholder="0º"
+                                                            onfocus="removeGrau(this)" onblur="addGrau(this)"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="longe_oe_dnp" placeholder="mm"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td rowspan="2" class="fw-bold bg-light align-middle">PERTO</td>
+                                                    <td class="fw-bold text-primary">O.D</td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="perto_od_esf" placeholder="0.00"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="perto_od_cil" placeholder="0.00"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="perto_od_eixo" placeholder="0º"
+                                                            onfocus="removeGrau(this)" onblur="addGrau(this)"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="perto_od_dnp" placeholder="mm"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold text-primary">O.E</td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="perto_oe_esf" placeholder="0.00"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="perto_oe_cil" placeholder="0.00"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="perto_oe_eixo" placeholder="0º"
+                                                            onfocus="removeGrau(this)" onblur="addGrau(this)"></td>
+                                                    <td><input type="text" class="form-control no-border text-center"
+                                                            id="perto_oe_dnp" placeholder="mm"></td>
+                                                </tr>
+                                                <tr class="bg-add">
+                                                    <td colspan="2" class="fw-bold text-end pe-3 align-middle">ADIÇÃO
+                                                        (ADD)</td>
+                                                    <td colspan="4"><input type="text"
+                                                            class="form-control no-border text-center fw-bold text-success"
+                                                            id="adicao" placeholder="+0.00" style="font-size: 1.2rem;">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="mt-3"><label class="fw-bold small">Lentes / Descrição</label><input
+                                            type="text" id="lentesDesc" class="form-control"
+                                            placeholder="Ex: Multifocal Transition Cinza"></div>
+                                    <div class="mt-2"><label class="fw-bold small">Observações</label><textarea
+                                            id="observacoes" class="form-control" rows="2"></textarea></div>
+                                    <div class="mt-4 text-end"><button type="submit"
+                                            class="btn btn-lg btn-martinelli w-100 shadow-sm"><i class="bi bi-save"></i>
+                                            Salvar e Fechar</button></div>
+                                </form>
                             </div>
-                            <div class="mt-2"><label class="fw-bold small">Observações</label><textarea id="observacoes"
-                                    class="form-control" rows="2"></textarea></div>
-                            <div class="mt-4 text-end"><button type="submit"
-                                    class="btn btn-lg btn-martinelli w-100 shadow-sm"><i class="bi bi-save"></i> Salvar
-                                    e Fechar</button></div>
-                        </form>
+                        </div>
                     </div>
+                    <div id="lista-historico-receitas" class="row g-3"></div>
                 </div>
+
+                <div class="tab-pane fade" id="tab-pedidos">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-secondary mb-0">Controle de Pedidos (OS)</h5>
+                        <button class="btn btn-primary" onclick="alternarFormPedido(true)"><i
+                                class="bi bi-cart-plus"></i> Novo Pedido</button>
+                    </div>
+
+                    <div id="area-novo-pedido" class="d-none mb-4">
+                        <div class="card shadow border-primary border-2">
+                            <div
+                                class="card-header bg-white text-primary fw-bold d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-cloud-arrow-up"></i> Novo Pedido (Envia para Webhook)</span>
+                                <button class="btn btn-sm btn-close" onclick="alternarFormPedido(false)"></button>
+                            </div>
+                            <div class="card-body p-4">
+                                <form id="formPedido">
+                                    <input type="hidden" id="pedidoClienteId">
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-3">
+                                            <label class="fw-bold text-danger small text-uppercase">Nº OS *</label>
+                                            <input type="text" id="ped_os" class="form-control fw-bold border-danger"
+                                                required placeholder="Ex: 2979">
+                                        </div>
+                                        <div class="col-md-9">
+                                            <label class="fw-bold small text-uppercase">Lentes / Tratamentos</label>
+                                            <input type="text" id="ped_lentes" class="form-control"
+                                                placeholder="Ex: Multifocais CR/AR Blue">
+                                        </div>
+                                    </div>
+
+                                    <h6 class="text-primary border-bottom pb-1 fw-bold mt-4">Dioptria</h6>
+                                    <div class="table-responsive mb-3">
+                                        <table class="table table-bordered text-center align-middle tabela-otica mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th style="width: 10%;">OLHO</th>
+                                                    <th>ESFÉRICO</th>
+                                                    <th>CILÍNDRICO</th>
+                                                    <th>EIXO</th>
+                                                    <th>DNP</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="fw-bold bg-light">OD</td>
+                                                    <td><input id="ped_od_esf"
+                                                            class="form-control no-border text-center"
+                                                            placeholder="+0.00"></td>
+                                                    <td><input id="ped_od_cil"
+                                                            class="form-control no-border text-center"
+                                                            placeholder="-0.00"></td>
+                                                    <td><input id="ped_od_eixo"
+                                                            class="form-control no-border text-center" placeholder="0º">
+                                                    </td>
+                                                    <td><input id="ped_od_dnp"
+                                                            class="form-control no-border text-center" placeholder="mm">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold bg-light">OE</td>
+                                                    <td><input id="ped_oe_esf"
+                                                            class="form-control no-border text-center"
+                                                            placeholder="+0.00"></td>
+                                                    <td><input id="ped_oe_cil"
+                                                            class="form-control no-border text-center"
+                                                            placeholder="-0.00"></td>
+                                                    <td><input id="ped_oe_eixo"
+                                                            class="form-control no-border text-center" placeholder="0º">
+                                                    </td>
+                                                    <td><input id="ped_oe_dnp"
+                                                            class="form-control no-border text-center" placeholder="mm">
+                                                    </td>
+                                                </tr>
+                                                <tr class="bg-light border-top border-dark">
+                                                    <td colspan="2"
+                                                        class="fw-bold text-end pe-3 text-success align-middle">ADIÇÃO
+                                                    </td>
+                                                    <td colspan="3"><input id="ped_adicao"
+                                                            class="form-control no-border fw-bold text-success text-center"
+                                                            style="font-size: 1.1rem;"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <h6 class="text-primary border-bottom pb-1 fw-bold mt-4">Medidas Armação</h6>
+                                    <div class="row g-2">
+                                        <div class="col-md-2 col-4">
+                                            <label class="small fw-bold text-muted">DP</label>
+                                            <input type="text" id="ped_dp"
+                                                class="form-control form-control-sm text-center">
+                                        </div>
+                                        <div class="col-md-2 col-4">
+                                            <label class="small fw-bold text-muted">MHA</label>
+                                            <input type="text" id="ped_mha"
+                                                class="form-control form-control-sm text-center">
+                                        </div>
+                                        <div class="col-md-2 col-4">
+                                            <label class="small fw-bold text-muted">MVA</label>
+                                            <input type="text" id="ped_mva"
+                                                class="form-control form-control-sm text-center">
+                                        </div>
+                                        <div class="col-md-2 col-4">
+                                            <label class="small fw-bold text-muted">DMA</label>
+                                            <input type="text" id="ped_dma"
+                                                class="form-control form-control-sm text-center">
+                                        </div>
+                                        <div class="col-md-2 col-4">
+                                            <label class="small fw-bold text-muted">PONTE</label>
+                                            <input type="text" id="ped_ponte"
+                                                class="form-control form-control-sm text-center">
+                                        </div>
+                                        <div class="col-md-2 col-4">
+                                            <label class="small fw-bold text-muted">ALTURA</label>
+                                            <input type="text" id="ped_altura"
+                                                class="form-control form-control-sm text-center">
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <label class="small fw-bold text-muted">Tipo Armação</label>
+                                            <input type="text" id="ped_tipo_arm" class="form-control form-control-sm"
+                                                placeholder="Ex: Acetato Fechado">
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 text-end border-top pt-3">
+                                        <button type="submit" class="btn btn-primary px-4 shadow-sm"><i
+                                                class="bi bi-send-check"></i> Salvar e Enviar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="lista-pedidos" class="list-group"></div>
+                </div>
+
             </div>
-            <div id="lista-historico-receitas" class="row g-3"></div>
         </div>
     </div>
-
     <div class="modal fade" id="modalReceitaDetalhes" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -548,11 +715,11 @@
         function exibirNotificacao(msg, tipo) {
             const toastEl = document.getElementById('liveToast');
             const toastBody = document.getElementById('toastMensagem');
-
-            toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+            toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info');
 
             if (tipo === 'sucesso') toastEl.classList.add('bg-success');
             else if (tipo === 'erro') toastEl.classList.add('bg-danger');
+            else if (tipo === 'info') toastEl.classList.add('bg-info');
             else toastEl.classList.add('bg-warning');
 
             toastBody.innerText = msg;
@@ -586,34 +753,43 @@
                 if (res.ok) {
                     const data = await res.json(); tbody.innerHTML = '';
                     if (data.dados && data.dados.length > 0) {
-                        data.dados.forEach(c => { tbody.innerHTML += `<tr><td>${c.id}</td><td class="fw-bold text-start text-uppercase">${c.nome}</td><td>${c.cpf || '-'}</td><td>${c.telefone || '-'}</td><td><button class="btn btn-sm btn-outline-success me-1" onclick="abrirReceita(${c.id},'${c.nome}')"><i class="bi bi-eye"></i> Ver Detalhes</button><button class="btn btn-sm btn-outline-danger" onclick="deletarCliente(${c.id})"><i class="bi bi-trash"></i></button></td></tr>`; });
+                        data.dados.forEach(c => { tbody.innerHTML += `<tr><td>${c.id}</td><td class="fw-bold text-start text-uppercase">${c.nome}</td><td>${c.cpf || '-'}</td><td>${c.telefone || '-'}</td><td><button class="btn btn-sm btn-outline-success me-1" onclick="abrirReceita(${c.id},'${c.nome}')"><i class="bi bi-eye"></i> Ver Ficha</button><button class="btn btn-sm btn-outline-danger" onclick="deletarCliente(${c.id})"><i class="bi bi-trash"></i></button></td></tr>`; });
                     } else tbody.innerHTML = `<tr><td colspan="5" class="text-muted py-4">Nada encontrado.${termo ? '<br><button class="btn btn-sm btn-outline-secondary mt-2" onclick="limparBusca()">Limpar</button>' : ''}</td></tr>`;
                 } else tbody.innerHTML = '<tr><td colspan="5">Erro.</td></tr>';
             } catch (e) { tbody.innerHTML = '<tr><td colspan="5">Erro conexão.</td></tr>'; }
         }
 
-        // === SALVAR CLIENTE COM TRATAMENTO DE ERRO ===
+        // SALVAR CLIENTE
         document.getElementById('formCliente').addEventListener('submit', async (e) => {
             e.preventDefault();
             const c = { nome: document.getElementById('nome').value, data_nascimento: document.getElementById('nascimento').value, cpf: document.getElementById('cpf').value, rg: document.getElementById('rg').value, telefone: document.getElementById('telefone').value, email: document.getElementById('email').value, cep: document.getElementById('cep').value, endereco: document.getElementById('endereco').value, numero: document.getElementById('numero').value, bairro: document.getElementById('bairro').value, cidade: document.getElementById('cidade').value };
-
             const res = await fetch(`${API_URL}/clientes`, { method: 'POST', body: JSON.stringify(c) });
-            const data = await res.json(); // Agora lemos o JSON de resposta
-
-            if (res.ok) {
-                exibirNotificacao(data.mensagem, 'sucesso');
-                mostrarLista();
-            } else {
-                // Pega a mensagem exata que o PHP mandou (ex: "CPF duplicado")
-                exibirNotificacao(data.mensagem || 'Erro ao salvar.', 'erro');
-            }
+            const data = await res.json();
+            if (res.ok) { exibirNotificacao(data.mensagem, 'sucesso'); mostrarLista(); } else { exibirNotificacao(data.mensagem || 'Erro ao salvar.', 'erro'); }
         });
 
         async function deletarCliente(id) { if (confirm('Apagar cliente e receitas?')) { await fetch(`${API_URL}/clientes/${id}`, { method: 'DELETE' }); carregarClientes(); } }
 
+        // === FUNÇÃO PRINCIPAL QUE ABRE A FICHA (RECEITAS + PEDIDOS) ===
         async function abrirReceita(id, nome_bkp) {
-            document.getElementById('tela-lista-clientes').classList.add('d-none'); document.getElementById('tela-form-receita').classList.remove('d-none'); document.getElementById('receitaClienteId').value = id;
-            document.getElementById('infoNome').innerText = 'Carregando...'; alternarFormularioReceita(false); document.getElementById('formReceita').reset(); document.getElementById('dataReceita').valueAsDate = new Date();
+            document.getElementById('tela-lista-clientes').classList.add('d-none');
+            document.getElementById('tela-form-receita').classList.remove('d-none');
+
+            // Setar IDs nos inputs hidden
+            document.getElementById('receitaClienteId').value = id;
+            document.getElementById('pedidoClienteId').value = id;
+
+            document.getElementById('infoNome').innerText = 'Carregando...';
+            alternarFormularioReceita(false);
+            alternarFormPedido(false);
+
+            document.getElementById('formReceita').reset();
+            document.getElementById('dataReceita').valueAsDate = new Date();
+
+            // Reseta para a primeira aba
+            const tabFirst = new bootstrap.Tab(document.querySelector('#receitas-tab'));
+            tabFirst.show();
+
             try {
                 const res = await fetch(`${API_URL}/clientes/${id}`);
                 if (res.ok) {
@@ -621,39 +797,29 @@
                     document.getElementById('infoId').innerText = c.id; document.getElementById('infoNome').innerText = c.nome; document.getElementById('infoNascimento').innerText = c.data_nascimento ? new Date(c.data_nascimento).toLocaleDateString('pt-BR') : '-'; document.getElementById('infoDataCadastro').innerText = "Cadastrado: " + (c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '-'); document.getElementById('infoCpf').innerText = c.cpf || '-'; document.getElementById('infoRg').innerText = c.rg || '-'; document.getElementById('infoTelefone').innerText = c.telefone || '-'; document.getElementById('infoEmail').innerText = c.email || '-'; document.getElementById('infoEndereco').innerText = c.endereco || '-'; document.getElementById('infoNumero').innerText = c.numero || 'S/N'; document.getElementById('infoBairro').innerText = c.bairro || '-'; document.getElementById('infoCidade').innerText = c.cidade || '-'; document.getElementById('infoCep').innerText = c.cep || '-';
                 }
             } catch (e) { document.getElementById('infoNome').innerText = nome_bkp; }
+
+            // CARREGA AS DUAS LISTAS
             carregarHistoricoReceitas(id);
+            carregarPedidos(id); // <--- NOVO
         }
+
+        // ============================================
+        // === LÓGICA DE RECEITAS (Mantido Original) ===
+        // ============================================
         function alternarFormularioReceita(show) { const f = document.getElementById('area-nova-receita'); const b = document.getElementById('btnMostrarForm'); if (show) { f.classList.remove('d-none'); b.classList.add('d-none'); document.getElementById('dataReceita').focus(); } else { f.classList.add('d-none'); b.classList.remove('d-none'); } }
 
         document.getElementById('formReceita').addEventListener('submit', async (e) => {
             e.preventDefault();
             const r = {
                 cliente_id: document.getElementById('receitaClienteId').value, data_receita: document.getElementById('dataReceita').value, medico: document.getElementById('medico').value, adicao: document.getElementById('adicao').value,
-                longe_od_esferico: document.getElementById('longe_od_esf').value, longe_od_cilindrico: document.getElementById('longe_od_cil').value,
-                longe_od_eixo: document.getElementById('longe_od_eixo').value.replace('º', ''),
-                longe_od_dnp: document.getElementById('longe_od_dnp').value,
-                longe_oe_esferico: document.getElementById('longe_oe_esf').value, longe_oe_cilindrico: document.getElementById('longe_oe_cil').value,
-                longe_oe_eixo: document.getElementById('longe_oe_eixo').value.replace('º', ''),
-                longe_oe_dnp: document.getElementById('longe_oe_dnp').value,
-                perto_od_esferico: document.getElementById('perto_od_esf').value, perto_od_cilindrico: document.getElementById('perto_od_cil').value,
-                perto_od_eixo: document.getElementById('perto_od_eixo').value.replace('º', ''),
-                perto_od_dnp: document.getElementById('perto_od_dnp').value,
-                perto_oe_esferico: document.getElementById('perto_oe_esf').value, perto_oe_cilindrico: document.getElementById('perto_oe_cil').value,
-                perto_oe_eixo: document.getElementById('perto_oe_eixo').value.replace('º', ''),
-                perto_oe_dnp: document.getElementById('perto_oe_dnp').value,
+                longe_od_esferico: document.getElementById('longe_od_esf').value, longe_od_cilindrico: document.getElementById('longe_od_cil').value, longe_od_eixo: document.getElementById('longe_od_eixo').value.replace('º', ''), longe_od_dnp: document.getElementById('longe_od_dnp').value,
+                longe_oe_esferico: document.getElementById('longe_oe_esf').value, longe_oe_cilindrico: document.getElementById('longe_oe_cil').value, longe_oe_eixo: document.getElementById('longe_oe_eixo').value.replace('º', ''), longe_oe_dnp: document.getElementById('longe_oe_dnp').value,
+                perto_od_esferico: document.getElementById('perto_od_esf').value, perto_od_cilindrico: document.getElementById('perto_od_cil').value, perto_od_eixo: document.getElementById('perto_od_eixo').value.replace('º', ''), perto_od_dnp: document.getElementById('perto_od_dnp').value,
+                perto_oe_esferico: document.getElementById('perto_oe_esf').value, perto_oe_cilindrico: document.getElementById('perto_oe_cil').value, perto_oe_eixo: document.getElementById('perto_oe_eixo').value.replace('º', ''), perto_oe_dnp: document.getElementById('perto_oe_dnp').value,
                 lentes_desc: document.getElementById('lentesDesc').value, observacoes: document.getElementById('observacoes').value
             };
             const res = await fetch(`${API_URL}/receitas`, { method: 'POST', body: JSON.stringify(r) });
-            if (res.ok) {
-                exibirNotificacao('Receita Salva com Sucesso!', 'sucesso');
-                carregarHistoricoReceitas(r.cliente_id);
-                alternarFormularioReceita(false);
-                document.getElementById('formReceita').reset();
-                document.getElementById('dataReceita').valueAsDate = new Date();
-                document.getElementById('receitaClienteId').value = r.cliente_id;
-            } else {
-                exibirNotificacao('Erro ao salvar receita.', 'erro');
-            }
+            if (res.ok) { exibirNotificacao('Receita Salva!', 'sucesso'); carregarHistoricoReceitas(r.cliente_id); alternarFormularioReceita(false); document.getElementById('formReceita').reset(); document.getElementById('dataReceita').valueAsDate = new Date(); document.getElementById('receitaClienteId').value = r.cliente_id; } else { exibirNotificacao('Erro ao salvar receita.', 'erro'); }
         });
 
         async function carregarHistoricoReceitas(cid) {
@@ -663,7 +829,7 @@
                 if (res.ok) {
                     const data = await res.json(); data.dados.sort((a, b) => new Date(b.data_receita) - new Date(a.data_receita));
                     data.dados.forEach(r => { d.innerHTML += `<div class="col-md-4 col-sm-6"><div class="card shadow-sm h-100 card-receita-hover" onclick="abrirModalDetalhes(${r.id})"><div class="card-body"><div class="d-flex justify-content-between align-items-center mb-2"><h5 class="card-title text-martinelli mb-0"><i class="bi bi-calendar-event"></i> ${new Date(r.data_receita).toLocaleDateString('pt-BR')}</h5><span class="badge bg-secondary rounded-pill">#${r.id}</span></div><p class="card-text mb-1 text-truncate"><i class="bi bi-person-badge"></i> ${r.medico || 'Não inf.'}</p><p class="card-text small text-secondary text-truncate">${r.lentes_desc || 'Sem desc.'}</p></div><div class="card-footer bg-white border-0 text-end pt-0"><small class="text-success fw-bold">Ver / Editar <i class="bi bi-arrow-right"></i></small></div></div></div>`; });
-                } else d.innerHTML = '<div class="col-12"><div class="alert alert-secondary text-center">Nenhuma receita.</div></div>';
+                } else d.innerHTML = '<div class="col-12"><div class="alert alert-secondary text-center">Nenhuma receita antiga.</div></div>';
             } catch (e) { d.innerHTML = '<div class="col-12 text-danger">Erro histórico.</div>'; }
         }
 
@@ -671,23 +837,10 @@
         async function abrirModalDetalhes(id) {
             const res = await fetch(`${API_URL}/receitas/${id}`); if (!res.ok) return alert('Erro'); const r = await res.json(); receitaAtualId = r.id;
             document.getElementById('modal_receita_id').value = r.id; document.getElementById('modal_cliente_id').value = r.cliente_id; document.getElementById('modal_data_receita').value = r.data_receita; document.getElementById('modal_medico').value = r.medico; document.getElementById('modal_adicao').value = r.adicao;
-
-            document.getElementById('modal_longe_od_esf').value = r.longe_od_esferico; document.getElementById('modal_longe_od_cil').value = r.longe_od_cilindrico;
-            document.getElementById('modal_longe_od_eixo').value = r.longe_od_eixo ? r.longe_od_eixo + 'º' : '';
-            document.getElementById('modal_longe_od_dnp').value = r.longe_od_dnp;
-
-            document.getElementById('modal_longe_oe_esf').value = r.longe_oe_esferico; document.getElementById('modal_longe_oe_cil').value = r.longe_oe_cilindrico;
-            document.getElementById('modal_longe_oe_eixo').value = r.longe_oe_eixo ? r.longe_oe_eixo + 'º' : '';
-            document.getElementById('modal_longe_oe_dnp').value = r.longe_oe_dnp;
-
-            document.getElementById('modal_perto_od_esf').value = r.perto_od_esferico; document.getElementById('modal_perto_od_cil').value = r.perto_od_cilindrico;
-            document.getElementById('modal_perto_od_eixo').value = r.perto_od_eixo ? r.perto_od_eixo + 'º' : '';
-            document.getElementById('modal_perto_od_dnp').value = r.perto_od_dnp;
-
-            document.getElementById('modal_perto_oe_esf').value = r.perto_oe_esferico; document.getElementById('modal_perto_oe_cil').value = r.perto_oe_cilindrico;
-            document.getElementById('modal_perto_oe_eixo').value = r.perto_oe_eixo ? r.perto_oe_eixo + 'º' : '';
-            document.getElementById('modal_perto_oe_dnp').value = r.perto_oe_dnp;
-
+            document.getElementById('modal_longe_od_esf').value = r.longe_od_esferico; document.getElementById('modal_longe_od_cil').value = r.longe_od_cilindrico; document.getElementById('modal_longe_od_eixo').value = r.longe_od_eixo ? r.longe_od_eixo + 'º' : ''; document.getElementById('modal_longe_od_dnp').value = r.longe_od_dnp;
+            document.getElementById('modal_longe_oe_esf').value = r.longe_oe_esferico; document.getElementById('modal_longe_oe_cil').value = r.longe_oe_cilindrico; document.getElementById('modal_longe_oe_eixo').value = r.longe_oe_eixo ? r.longe_oe_eixo + 'º' : ''; document.getElementById('modal_longe_oe_dnp').value = r.longe_oe_dnp;
+            document.getElementById('modal_perto_od_esf').value = r.perto_od_esferico; document.getElementById('modal_perto_od_cil').value = r.perto_od_cilindrico; document.getElementById('modal_perto_od_eixo').value = r.perto_od_eixo ? r.perto_od_eixo + 'º' : ''; document.getElementById('modal_perto_od_dnp').value = r.perto_od_dnp;
+            document.getElementById('modal_perto_oe_esf').value = r.perto_oe_esferico; document.getElementById('modal_perto_oe_cil').value = r.perto_oe_cilindrico; document.getElementById('modal_perto_oe_eixo').value = r.perto_oe_eixo ? r.perto_oe_eixo + 'º' : ''; document.getElementById('modal_perto_oe_dnp').value = r.perto_oe_dnp;
             document.getElementById('modal_lentes').value = r.lentes_desc; document.getElementById('modal_obs').value = r.observacoes;
             desabilitarEdicao(); new bootstrap.Modal(document.getElementById('modalReceitaDetalhes')).show();
             document.getElementById('btnExcluirReceita').onclick = () => deletarReceita(r.id, r.cliente_id);
@@ -700,30 +853,84 @@
             const id = receitaAtualId;
             const r = {
                 cliente_id: document.getElementById('modal_cliente_id').value, data_receita: document.getElementById('modal_data_receita').value, medico: document.getElementById('modal_medico').value, adicao: document.getElementById('modal_adicao').value,
-                longe_od_esferico: document.getElementById('modal_longe_od_esf').value, longe_od_cilindrico: document.getElementById('modal_longe_od_cil').value,
-                longe_od_eixo: document.getElementById('modal_longe_od_eixo').value.replace('º', ''),
-                longe_od_dnp: document.getElementById('modal_longe_od_dnp').value,
-                longe_oe_esferico: document.getElementById('modal_longe_oe_esf').value, longe_oe_cilindrico: document.getElementById('modal_longe_oe_cil').value,
-                longe_oe_eixo: document.getElementById('modal_longe_oe_eixo').value.replace('º', ''),
-                longe_oe_dnp: document.getElementById('modal_longe_oe_dnp').value,
-                perto_od_esferico: document.getElementById('modal_perto_od_esf').value, perto_od_cilindrico: document.getElementById('modal_perto_od_cil').value,
-                perto_od_eixo: document.getElementById('modal_perto_od_eixo').value.replace('º', ''),
-                perto_od_dnp: document.getElementById('modal_perto_od_dnp').value,
-                perto_oe_esferico: document.getElementById('modal_perto_oe_esf').value, perto_oe_cilindrico: document.getElementById('modal_perto_oe_cil').value,
-                perto_oe_eixo: document.getElementById('modal_perto_oe_eixo').value.replace('º', ''),
-                perto_oe_dnp: document.getElementById('modal_perto_oe_dnp').value,
+                longe_od_esferico: document.getElementById('modal_longe_od_esf').value, longe_od_cilindrico: document.getElementById('modal_longe_od_cil').value, longe_od_eixo: document.getElementById('modal_longe_od_eixo').value.replace('º', ''), longe_od_dnp: document.getElementById('modal_longe_od_dnp').value,
+                longe_oe_esferico: document.getElementById('modal_longe_oe_esf').value, longe_oe_cilindrico: document.getElementById('modal_longe_oe_cil').value, longe_oe_eixo: document.getElementById('modal_longe_oe_eixo').value.replace('º', ''), longe_oe_dnp: document.getElementById('modal_longe_oe_dnp').value,
+                perto_od_esferico: document.getElementById('modal_perto_od_esf').value, perto_od_cilindrico: document.getElementById('modal_perto_od_cil').value, perto_od_eixo: document.getElementById('modal_perto_od_eixo').value.replace('º', ''), perto_od_dnp: document.getElementById('modal_perto_od_dnp').value,
+                perto_oe_esferico: document.getElementById('modal_perto_oe_esf').value, perto_oe_cilindrico: document.getElementById('modal_perto_oe_cil').value, perto_oe_eixo: document.getElementById('modal_perto_oe_eixo').value.replace('º', ''), perto_oe_dnp: document.getElementById('modal_perto_oe_dnp').value,
                 lentes_desc: document.getElementById('modal_lentes').value, observacoes: document.getElementById('modal_obs').value
             };
             const res = await fetch(`${API_URL}/receitas/${id}`, { method: 'PUT', body: JSON.stringify(r) });
-            if (res.ok) {
-                exibirNotificacao('Receita atualizada!', 'sucesso');
-                bootstrap.Modal.getInstance(document.getElementById('modalReceitaDetalhes')).hide();
-                carregarHistoricoReceitas(r.cliente_id);
-            } else { exibirNotificacao('Erro ao atualizar.', 'erro'); }
+            if (res.ok) { exibirNotificacao('Atualizado!', 'sucesso'); bootstrap.Modal.getInstance(document.getElementById('modalReceitaDetalhes')).hide(); carregarHistoricoReceitas(r.cliente_id); } else { exibirNotificacao('Erro ao atualizar.', 'erro'); }
         }
-
         async function deletarReceita(id, cid) { if (confirm('Apagar?')) { const res = await fetch(`${API_URL}/receitas/${id}`, { method: 'DELETE' }); if (res.ok) { bootstrap.Modal.getInstance(document.getElementById('modalReceitaDetalhes')).hide(); carregarHistoricoReceitas(cid); } } }
 
+        // ============================================
+        // === LÓGICA DE PEDIDOS (NOVO CÓDIGO) ======
+        // ============================================
+        const STATUS_COLORS = { 'Lente Solicitada': 'warning', 'Oculos montado': 'info', 'Finalizado': 'success' };
+
+        function alternarFormPedido(show) { const f = document.getElementById('area-novo-pedido'); if (show) { f.classList.remove('d-none'); document.getElementById('formPedido').reset(); } else { f.classList.add('d-none'); } }
+
+        async function carregarPedidos(cid) {
+            const div = document.getElementById('lista-pedidos');
+            div.innerHTML = '<div class="text-center p-3">Carregando pedidos...</div>';
+            try {
+                const res = await fetch(`${API_URL}/pedidos-lente/cliente/${cid}`); div.innerHTML = '';
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.dados && data.dados.length > 0) {
+                        data.dados.forEach(p => {
+                            const cor = STATUS_COLORS[p.status] || 'secondary';
+                            const stWeb = p.status_envio === 'enviado' ? '<i class="bi bi-cloud-check text-success" title="Enviado n8n"></i>' : '<i class="bi bi-cloud-slash text-danger" title="Erro envio"></i>';
+                            div.innerHTML += `
+                            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-start border-4 border-${cor} mb-2 shadow-sm">
+                                <div class="ms-2">
+                                    <div class="fw-bold text-dark">OS: ${p.numero_os} ${stWeb}</div>
+                                    <span class="badge bg-${cor} mb-1">${p.status}</span><br>
+                                    <small class="text-muted"><i class="bi bi-calendar"></i> ${new Date(p.data_pedido).toLocaleDateString('pt-BR')}</small><br>
+                                    <small class="fw-bold">${p.descricao_lentes || 'Lentes'}</small>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">Status</button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" onclick="mudarStatusPedido(${p.id}, ${p.cliente_id}, 'Lente Solicitada')">🟡 Lente Solicitada</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="mudarStatusPedido(${p.id}, ${p.cliente_id}, 'Oculos montado')">🔵 Oculos montado</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item fw-bold text-success" href="#" onclick="mudarStatusPedido(${p.id}, ${p.cliente_id}, 'Finalizado')">🟢 Finalizado</a></li>
+                                    </ul>
+                                </div>
+                            </div>`;
+                        });
+                    } else div.innerHTML = '<div class="alert alert-light text-center">Nenhum pedido de lente (OS).</div>';
+                } else div.innerHTML = '<div class="alert alert-light text-center">Sem pedidos.</div>';
+            } catch (e) { div.innerHTML = 'Erro pedidos.'; }
+        }
+
+        async function mudarStatusPedido(id, cid, st) {
+            exibirNotificacao('Atualizando...', 'info');
+            const res = await fetch(`${API_URL}/pedidos-lente/${id}`, { method: 'PUT', body: JSON.stringify({ status: st }) });
+            if (res.ok) { exibirNotificacao('Status atualizado!', 'sucesso'); carregarPedidos(cid); } else exibirNotificacao('Erro status', 'erro');
+        }
+
+        document.getElementById('formPedido').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const p = {
+                cliente_id: document.getElementById('pedidoClienteId').value, numero_os: document.getElementById('ped_os').value, descricao_lentes: document.getElementById('ped_lentes').value,
+                od_esferico: document.getElementById('ped_od_esf').value, od_cilindrico: document.getElementById('ped_od_cil').value, od_eixo: document.getElementById('ped_od_eixo').value, od_dnp: document.getElementById('ped_od_dnp').value,
+                oe_esferico: document.getElementById('ped_oe_esf').value, oe_cilindrico: document.getElementById('ped_oe_cil').value, oe_eixo: document.getElementById('ped_oe_eixo').value, oe_dnp: document.getElementById('ped_oe_dnp').value,
+                adicao: document.getElementById('ped_adicao').value,
+                medida_dp: document.getElementById('ped_dp').value, medida_mha: document.getElementById('ped_mha').value, medida_mva: document.getElementById('ped_mva').value, medida_dma: document.getElementById('ped_dma').value, medida_ponte: document.getElementById('ped_ponte').value, medida_altura: document.getElementById('ped_altura').value, tipo_armacao: document.getElementById('ped_tipo_arm').value
+            };
+            const btn = e.target.querySelector('button[type="submit"]'); btn.innerHTML = 'Enviando...'; btn.disabled = true;
+            try {
+                const res = await fetch(`${API_URL}/pedidos-lente`, { method: 'POST', body: JSON.stringify(p) });
+                if (res.ok) { exibirNotificacao('Pedido Salvo!', 'sucesso'); alternarFormPedido(false); carregarPedidos(p.cliente_id); } else exibirNotificacao('Erro ao salvar.', 'erro');
+            } catch (err) { exibirNotificacao('Erro conexão.', 'erro'); } finally { btn.innerHTML = '<i class="bi bi-send-check"></i> Salvar e Enviar'; btn.disabled = false; }
+        });
+
+        // ============================================
+        // === FUNÇÕES DE SUPORTE (Mantido) =========
+        // ============================================
         async function abrirModalEditarCliente() {
             const id = document.getElementById('receitaClienteId').value; const res = await fetch(`${API_URL}/clientes/${id}`);
             if (res.ok) {
@@ -736,60 +943,24 @@
             e.preventDefault(); const id = document.getElementById('edit_id').value;
             const c = { nome: document.getElementById('edit_nome').value, data_nascimento: document.getElementById('edit_nascimento').value, cpf: document.getElementById('edit_cpf').value, rg: document.getElementById('edit_rg').value, telefone: document.getElementById('edit_telefone').value, email: document.getElementById('edit_email').value, cep: document.getElementById('edit_cep').value, endereco: document.getElementById('edit_endereco').value, numero: document.getElementById('edit_numero').value, bairro: document.getElementById('edit_bairro').value, cidade: document.getElementById('edit_cidade').value };
             const res = await fetch(`${API_URL}/clientes/${id}`, { method: 'PUT', body: JSON.stringify(c) });
-            if (res.ok) {
-                exibirNotificacao('Cliente Atualizado!', 'sucesso');
-                bootstrap.Modal.getInstance(document.getElementById('modalEditarCliente')).hide();
-                abrirReceita(id, c.nome);
-            } else { exibirNotificacao('Erro ao atualizar.', 'erro'); }
+            if (res.ok) { exibirNotificacao('Cliente Atualizado!', 'sucesso'); bootstrap.Modal.getInstance(document.getElementById('modalEditarCliente')).hide(); abrirReceita(id, c.nome); } else { exibirNotificacao('Erro ao atualizar.', 'erro'); }
         });
 
         function imprimirReceita() {
-            const nome = document.getElementById('infoNome').innerText;
-            const cpf = document.getElementById('infoCpf').innerText;
-            const tel = document.getElementById('infoTelefone').innerText;
-            const endereco = document.getElementById('infoEndereco').innerText + ', ' + document.getElementById('infoNumero').innerText;
-            const bairro = document.getElementById('infoBairro').innerText;
-            const cidade = document.getElementById('infoCidade').innerText;
-            const dataReceita = document.getElementById('modal_data_receita').value.split('-').reverse().join('/');
-            const medico = document.getElementById('modal_medico').value;
-            const obs = document.getElementById('modal_obs').value;
-            const lentes = document.getElementById('modal_lentes').value;
-            const adicao = document.getElementById('modal_adicao').value || '';
             const v = (id) => document.getElementById(id).value || '&nbsp;';
-
-            const conteudo = `
-                <html><head><title>Impressão</title>
-                <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; color: #000; }
-                    .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #006400; padding-bottom: 10px; }
-                    .logo { font-size: 24px; font-weight: bold; color: #006400; text-transform: uppercase; }
-                    .box-info { border: 1px solid #000; padding: 10px; margin-bottom: 20px; border-radius: 5px; }
-                    .box-title { font-weight: bold; background: #eee; padding: 5px; margin: -10px -10px 10px -10px; border-bottom: 1px solid #000; font-size: 14px; }
-                    .row { display: flex; margin-bottom: 8px; } .col { flex: 1; }
-                    .label { font-weight: bold; font-size: 12px; margin-right: 5px; } .dado { border-bottom: 1px solid #ccc; font-size: 14px; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center; font-size: 12px; }
-                    th, td { border: 1px solid #000; padding: 8px 2px; } th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
-                    .assinatura { margin-top: 60px; text-align: center; } .line-sig { border-top: 1px solid #000; width: 250px; display: inline-block; padding-top: 5px; }
-                </style></head><body>
-                    <div class="header"><div class="logo">Óticas Martinelli</div></div>
-                    <div class="box-info"><div class="box-title">DADOS DO CLIENTE</div><div class="row"><div class="col"><span class="label">Cliente:</span> <span class="dado">${nome}</span></div></div><div class="row"><div class="col"><span class="label">CPF:</span> <span class="dado">${cpf}</span></div><div class="col"><span class="label">Telefone:</span> <span class="dado">${tel}</span></div></div><div class="row"><div class="col"><span class="label">Endereço:</span> <span class="dado">${endereco} - ${bairro} - ${cidade}</span></div></div></div>
-                    <div class="box-info"><div class="box-title">PRESCRIÇÃO</div><div class="row"><div class="col"><span class="label">Data:</span> <span class="dado">${dataReceita}</span></div><div class="col"><span class="label">Médico:</span> <span class="dado">${medico}</span></div></div>
-                        <table><thead><tr><th width="10%"></th><th width="10%"></th><th>ESFÉRICO</th><th>CILÍNDRICO</th><th>EIXO</th><th>DNP</th></tr></thead><tbody>
-                            <tr><td rowspan="2" style="font-weight:bold; background:#f0f0f0;">LONGE</td><td style="font-weight:bold;">O.D</td><td>${v('modal_longe_od_esf')}</td><td>${v('modal_longe_od_cil')}</td><td>${v('modal_longe_od_eixo')}</td><td>${v('modal_longe_od_dnp')}</td></tr>
-                            <tr><td style="font-weight:bold;">O.E</td><td>${v('modal_longe_oe_esf')}</td><td>${v('modal_longe_oe_cil')}</td><td>${v('modal_longe_oe_eixo')}</td><td>${v('modal_longe_oe_dnp')}</td></tr>
-                            
-                            <tr><td rowspan="2" style="font-weight:bold; background:#f0f0f0;">PERTO</td><td style="font-weight:bold;">O.D</td><td>${v('modal_perto_od_esf')}</td><td>${v('modal_perto_od_cil')}</td><td>${v('modal_perto_od_eixo')}</td><td>${v('modal_perto_od_dnp')}</td></tr>
-                            <tr><td style="font-weight:bold;">O.E</td><td>${v('modal_perto_oe_esf')}</td><td>${v('modal_perto_oe_cil')}</td><td>${v('modal_perto_oe_eixo')}</td><td>${v('modal_perto_oe_dnp')}</td></tr>
-                            <tr><td colspan="2" style="font-weight:bold; background:#f0f0f0;">ADIÇÃO</td><td colspan="4" style="font-weight:bold;">${adicao}</td></tr>
-                            </tbody></table>
-                    </div>
-                    <div class="box-info"><div class="row"><div class="col"><span class="label">Lentes:</span> <span class="dado">${lentes}</span></div></div><div class="row" style="margin-top:10px"><div class="col"><span class="label">Obs:</span> <div>${obs}</div></div></div></div>
-                    <div class="assinatura"><div class="line-sig">Assinatura</div></div>
-                </body></html>`;
-            const j = window.open('', '', 'height=600,width=800'); j.document.write(conteudo); j.document.close();
-            j.onload = function () { j.print(); j.onafterprint = function () { j.close(); }; };
+            const conteudo = `<html><head><title>Impressão</title><style>body { font-family: Arial; padding: 20px; } .box { border: 1px solid #000; padding: 10px; margin-bottom: 20px; } table { width: 100%; border-collapse: collapse; text-align: center; } th, td { border: 1px solid #000; padding: 5px; }</style></head><body>
+            <h2 style="text-align:center">ÓTICAS MARTINELLI</h2>
+            <div class="box"><b>Cliente:</b> ${document.getElementById('infoNome').innerText} | <b>CPF:</b> ${document.getElementById('infoCpf').innerText}<br><b>Data:</b> ${document.getElementById('modal_data_receita').value.split('-').reverse().join('/')} | <b>Médico:</b> ${document.getElementById('modal_medico').value}</div>
+            <div class="box"><table><thead><tr><th></th><th></th><th>ESF</th><th>CIL</th><th>EIXO</th><th>DNP</th></tr></thead><tbody>
+            <tr><td rowspan="2">LONGE</td><td>OD</td><td>${v('modal_longe_od_esf')}</td><td>${v('modal_longe_od_cil')}</td><td>${v('modal_longe_od_eixo')}</td><td>${v('modal_longe_od_dnp')}</td></tr>
+            <tr><td>OE</td><td>${v('modal_longe_oe_esf')}</td><td>${v('modal_longe_oe_cil')}</td><td>${v('modal_longe_oe_eixo')}</td><td>${v('modal_longe_oe_dnp')}</td></tr>
+            <tr><td rowspan="2">PERTO</td><td>OD</td><td>${v('modal_perto_od_esf')}</td><td>${v('modal_perto_od_cil')}</td><td>${v('modal_perto_od_eixo')}</td><td>${v('modal_perto_od_dnp')}</td></tr>
+            <tr><td>OE</td><td>${v('modal_perto_oe_esf')}</td><td>${v('modal_perto_oe_cil')}</td><td>${v('modal_perto_oe_eixo')}</td><td>${v('modal_perto_oe_dnp')}</td></tr>
+            <tr><td colspan="2">ADD</td><td colspan="4">${v('modal_adicao')}</td></tr></tbody></table></div>
+            <div class="box"><b>Lentes:</b> ${v('modal_lentes')}<br><b>Obs:</b> ${v('modal_obs')}</div>
+            </body></html>`;
+            const j = window.open('', '', 'height=600,width=800'); j.document.write(conteudo); j.document.close(); j.onload = function () { j.print(); j.close(); };
         }
-
         mostrarLista();
     </script>
 </body>

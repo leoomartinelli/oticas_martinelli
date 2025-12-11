@@ -69,6 +69,21 @@ switch ($recurso) {
         }
         break;
 
+    case 'pedidos-lente':
+        include_once 'controllers/PedidoLenteController.php';
+        $pedController = new PedidoLenteController();
+
+        if ($method == 'POST') {
+            $pedController->store();
+        } elseif ($method == 'PUT' && $id) {
+            // Atualizar status: PUT /pedidos-lente/{id}
+            $pedController->updateStatus($id);
+        } elseif ($method == 'GET' && isset($urlParts[2]) && $urlParts[1] == 'cliente') {
+            $idCliente = $urlParts[2];
+            $pedController->getByCliente($idCliente);
+        }
+        break;
+
     default:
         http_response_code(404);
         echo json_encode(["mensagem" => "Rota não encontrada"]);
